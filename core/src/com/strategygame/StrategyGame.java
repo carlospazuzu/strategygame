@@ -17,13 +17,14 @@ public class StrategyGame extends ApplicationAdapter {
     public static final float STEP = 1 / 60f;
     private float acum;
 
-    public static final int WIDTH = 320;
-    public static final int HEIGHT = 240;
+    public static final int WIDTH = 240; // 320
+    public static final int HEIGHT = 160; // 240
 
     private GameStateManager gsm;
 
     @Override
     public void create () {
+
         sb = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
