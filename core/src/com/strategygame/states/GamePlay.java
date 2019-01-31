@@ -20,8 +20,8 @@ public class GamePlay extends GameState {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
-    Animation<TextureRegion> knightAnimation;
-    Texture knightSpriteSheet;
+    Animation<TextureRegion> knightAnimation, mageAnimation, rogueAnimation;
+    Texture knightSpriteSheet, mageSpriteSheet, rogueSpriteSheet;
     SpriteBatch spriteBatch;
 
     float stateTime;
@@ -35,27 +35,44 @@ public class GamePlay extends GameState {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         knightSpriteSheet = new Texture(Gdx.files.internal("fighters/knight.png"));
+        mageSpriteSheet = new Texture(Gdx.files.internal("fighters/mage.png"));
+        rogueSpriteSheet = new Texture(Gdx.files.internal("fighters/rogue.png"));
+
         TextureRegion[][] tmp =
                 TextureRegion.split(knightSpriteSheet,
                         knightSpriteSheet.getWidth() / FRAME_COLS,
                         knightSpriteSheet.getHeight() / FRAME_ROWS);
+        TextureRegion[][] tmp2 =
+                TextureRegion.split(mageSpriteSheet,
+                        mageSpriteSheet.getWidth() / FRAME_COLS,
+                        mageSpriteSheet.getHeight() / FRAME_ROWS);
+        TextureRegion[][] tmp3 =
+                TextureRegion.split(rogueSpriteSheet,
+                        rogueSpriteSheet.getWidth() / FRAME_COLS,
+                        rogueSpriteSheet.getHeight() / FRAME_ROWS);
+
         TextureRegion[] knightFrames = new TextureRegion[FRAME_ROWS * FRAME_COLS];
+        TextureRegion[] mageFrames = new TextureRegion[FRAME_ROWS * FRAME_COLS];
+        TextureRegion[] rogueFrames = new TextureRegion[FRAME_ROWS * FRAME_COLS];
+
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i ++)
         {
             for (int j = 0; j < FRAME_COLS; j ++)
             {
-                knightFrames[index++] = tmp[i][j];
+                knightFrames[index] = tmp[i][j];
+                mageFrames[index] = tmp2[i][j];
+                rogueFrames[index++] = tmp3[i][j];
             }
         }
 
         knightAnimation = new Animation<TextureRegion>(0.5f, knightFrames);
+        mageAnimation = new Animation<TextureRegion>(0.5f, mageFrames);
+        rogueAnimation = new Animation<TextureRegion>(0.5f, rogueFrames);
 
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
 
-        Gdx.app.log("SCREEN WIDTH", "" + camera.viewportWidth);
-        Gdx.app.log("SCREEN HEIGHT", "" + camera.viewportHeight);
     }
 
     @Override
@@ -76,10 +93,21 @@ public class GamePlay extends GameState {
         tiledMapRenderer.render();
 
         TextureRegion currentFrame = knightAnimation.getKeyFrame(stateTime, true);
+        TextureRegion currentMageFrame = mageAnimation.getKeyFrame(stateTime, true);
+        TextureRegion currentRogueFrame = rogueAnimation.getKeyFrame(stateTime, true);
+
+        spriteBatch.setProjectionMatrix(camera.combined);
+
         spriteBatch.begin();
         spriteBatch.draw(currentFrame,
-                (currentFrame.getRegionWidth() * 2 * 11) - 24, (currentFrame.getRegionWidth() * 2 * 5),
-                currentFrame.getRegionWidth() * 3, currentFrame.getRegionHeight() * 3);
+                10 * 16, 16 * 4,
+                currentFrame.getRegionWidth() / 2,  currentFrame.getRegionHeight() / 2);
+        spriteBatch.draw(currentMageFrame,
+                11 * 16, 16 * 5,
+                currentMageFrame.getRegionWidth() / 2,  currentMageFrame.getRegionHeight() / 2);
+        spriteBatch.draw(currentRogueFrame,
+                8 * 16, 16 * 3,
+                currentRogueFrame.getRegionWidth() / 2,  currentRogueFrame.getRegionHeight() / 2);
 
         spriteBatch.end();
 
