@@ -1,20 +1,21 @@
-package com.strategygame.entities;
+package com.strategygame.fighters;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.strategygame.entities.Actor;
 import com.strategygame.helpers.ActorAnimation;
 import com.strategygame.helpers.AssetsManager;
 
-public class Knight extends Actor{
+public class Rogue extends Actor {
 
-    public Knight() {
-        healthPoints = 10;
-        movement = 3;
-        attack = 3;
+    public Rogue() {
+        healthPoints = 9;
+        movement = 5;
+        attack = 2;
         defense = 1;
         attackRange = 1;
-        speed = 2;
+        speed = 5;
 
-        actorAnimation = new ActorAnimation(AssetsManager.getInstance().KNIGHT, 1, 2);
+        actorAnimation = new ActorAnimation(AssetsManager.getInstance().ROGUE, 1, 2);
     }
 
     @Override
