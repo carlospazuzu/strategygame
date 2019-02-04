@@ -40,14 +40,6 @@ public class GamePlay extends GameState {
         tiledMap = new TmxMapLoader().load("tmx/forest.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        Gdx.app.log("Map Properties", "" + tiledMap.getProperties().getValues());
-        Iterator itr = tiledMap.getProperties().getKeys();
-
-        while (itr.hasNext()) {
-            Gdx.app.log("TileMap Keys: ", itr.next().toString());
-        }
-
-
         spriteBatch = new SpriteBatch();
         stateTime = 0f;
 
@@ -56,7 +48,7 @@ public class GamePlay extends GameState {
         rogue = new Rogue();
 
         cameraController = new CameraController(camera, tiledMap, game);
-        cameraController.moveTo(10, 15);
+        // cameraController.moveToChar(14, 11);
 
     }
 
@@ -87,11 +79,11 @@ public class GamePlay extends GameState {
 
         knight.render(spriteBatch, 7, 4);
         mage.render(spriteBatch, 5, 5);
-        rogue.render(spriteBatch, 9, 6);
+        rogue.render(spriteBatch, 9, 4);
 
         spriteBatch.end();
 
-        cameraController.update(1);
+        cameraController.update(Gdx.graphics.getDeltaTime());
 
     }
 
