@@ -23,4 +23,8 @@ public class CTBBController {
     public void update(float delta) {
 
     }
+
+    public void render() {
+
+    }
 }

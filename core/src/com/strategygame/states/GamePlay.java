@@ -1,6 +1,7 @@
 package com.strategygame.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -26,6 +27,9 @@ public class GamePlay extends GameState {
 
     private SpriteBatch spriteBatch;
 
+    private Music openingMusic;
+    private Music battleMusic;
+
     private float stateTime;
 
     private Knight knight;
@@ -49,6 +53,22 @@ public class GamePlay extends GameState {
 
         cameraController = new CameraController(camera, tiledMap, game);
         // cameraController.moveToChar(14, 11);
+
+        /*
+        openingMusic = Gdx.audio.newMusic(Gdx.files.internal("music/opening.ogg"));
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("music/battle.ogg"));
+
+        openingMusic.setOnCompletionListener(new Music.OnCompletionListener() {
+            @Override
+            public void onCompletion(Music music) {
+                battleMusic.setLooping(true);
+                battleMusic.play();
+            }
+        });
+
+        openingMusic.setLooping(false);
+        openingMusic.play();
+        */
 
     }
 
