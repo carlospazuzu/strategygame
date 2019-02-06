@@ -39,6 +39,7 @@ public class StrategyGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0x2E / 255f, 0,  0xAE / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        gsm.handleInput();
         gsm.update(Gdx.graphics.getDeltaTime());
         gsm.render();
     }

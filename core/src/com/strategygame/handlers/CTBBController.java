@@ -1,6 +1,7 @@
 package com.strategygame.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.strategygame.StrategyGame;
 import com.strategygame.entities.Actor;
 import com.strategygame.guieffects.GeneralPlayerSelection;
 import com.strategygame.helpers.ActorPriorityComparator;
@@ -16,7 +17,7 @@ public class CTBBController {
 
     private GeneralPlayerSelection generalPlayerSelection;
 
-    public CTBBController(List<Actor> team, OrthographicCamera camera, OrthographicCamera hudCamera) {
+    public CTBBController(List<Actor> team, OrthographicCamera camera, OrthographicCamera hudCamera, StrategyGame game) {
         /*
         Collections.sort(team, new ActorPriorityComparator());
         Collections.reverse(team);
@@ -26,8 +27,12 @@ public class CTBBController {
         }
         */
 
-        generalPlayerSelection = new GeneralPlayerSelection(hudCamera);
+        generalPlayerSelection = new GeneralPlayerSelection(hudCamera, game);
 
+    }
+
+    public void handleInput() {
+        generalPlayerSelection.handleInput();
     }
 
     public void update(float delta) {

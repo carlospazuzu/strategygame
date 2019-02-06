@@ -1,10 +1,14 @@
 package com.strategygame.guieffects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.strategygame.StrategyGame;
 import com.strategygame.entities.GameImage;
+import com.strategygame.handlers.PlayerInput;
 import com.strategygame.helpers.AssetsManager;
 
 public class GeneralPlayerSelection {
@@ -30,9 +34,13 @@ public class GeneralPlayerSelection {
     private int buttonMapTargetX;
     private int buttonCommandsTargetX;
 
-    public GeneralPlayerSelection(OrthographicCamera hudCamera) {
+    private StrategyGame game;
+
+    public GeneralPlayerSelection(OrthographicCamera hudCamera, StrategyGame game) {
         this.hudCamera = hudCamera;
         spriteBatch = new SpriteBatch();
+
+        this.game = game;
 
         currentPlayerInfo = new GameImage(AssetsManager.getInstance().PLACEHOLDER);
         buttonMap = new GameImage(AssetsManager.getInstance().MAPBUTTON);
@@ -53,6 +61,24 @@ public class GeneralPlayerSelection {
 
     public void setCurrentState(State state) {
         currentState = state;
+    }
+
+    public void handleInput() {
+        Gdx.app.log("POS X", "" + PlayerInput.screenX);
+        Gdx.app.log("POS Y", "" + PlayerInput.screenY);
+        Gdx.app.log("BTN POS X", "" + buttonMap.getPositionX());
+        Gdx.app.log("BTN POS Y", "" + buttonMap.getPositionY());
+        Gdx.app.log("SCREEN WIDTH", "" + Gdx.graphics.getWidth());
+        Gdx.app.log("SCREEN HEIGHT", "" + Gdx.graphics.getHeight());
+        Gdx.app.log("CLICK POS X", "" + PlayerInput.screenX / (Gdx.graphics.getWidth() / 240.0f));
+        Gdx.app.log("CLICK POS Y", "" + PlayerInput.screenY / (Gdx.graphics.getHeight() / 160.0f));
+        if (PlayerInput.isPressed) {
+            if (new Rectangle(buttonMap.getPositionX(), buttonMap.getPositionY(),
+                    buttonMap.getPositionX() + buttonMap.getWidth(), buttonMap.getPositionY() + buttonMap.getHeight())
+                    .contains(new Vector2(PlayerInput.screenX / (Gdx.graphics.getWidth() / 240.0f), 160 - (PlayerInput.screenY / (Gdx.graphics.getHeight() / 160.0f))))) {
+                Gdx.app.log("TOUCH", "PLAYER HAS JUST TOUCHED MAP BUTTON!");
+            }
+        }
     }
 
     public void update(float delta) {

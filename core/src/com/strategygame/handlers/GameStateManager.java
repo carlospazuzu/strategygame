@@ -22,6 +22,10 @@ public class GameStateManager {
 
     public StrategyGame game() { return game; }
 
+    public void handleInput() {
+        gameStates.peek().handleInput();
+    }
+
     public void update(float delta) {
         gameStates.peek().update(delta);
     }
