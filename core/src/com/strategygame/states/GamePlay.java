@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.strategygame.fighters.Knight;
 import com.strategygame.fighters.Mage;
 import com.strategygame.fighters.Rogue;
+import com.strategygame.handlers.CTBBController;
 import com.strategygame.handlers.CameraController;
 import com.strategygame.handlers.GameStateManager;
 
@@ -38,6 +39,8 @@ public class GamePlay extends GameState {
 
     private CameraController cameraController;
 
+    private CTBBController ctbbController;
+
     public GamePlay(GameStateManager gsm) {
         super(gsm);
 
@@ -52,9 +55,9 @@ public class GamePlay extends GameState {
         rogue = new Rogue();
 
         cameraController = new CameraController(camera, tiledMap, game);
+        ctbbController = new CTBBController(null, camera, hudCamera);
         // cameraController.moveToChar(14, 11);
 
-        /*
         openingMusic = Gdx.audio.newMusic(Gdx.files.internal("music/opening.ogg"));
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("music/battle.ogg"));
 
@@ -68,7 +71,6 @@ public class GamePlay extends GameState {
 
         openingMusic.setLooping(false);
         openingMusic.play();
-        */
 
     }
 
@@ -84,6 +86,9 @@ public class GamePlay extends GameState {
         knight.update(delta);
         mage.update(delta);
         rogue.update(delta);
+
+        ctbbController.update(delta);
+
     }
 
     @Override
@@ -104,6 +109,8 @@ public class GamePlay extends GameState {
         spriteBatch.end();
 
         cameraController.update(Gdx.graphics.getDeltaTime());
+
+        ctbbController.render();
 
     }
 

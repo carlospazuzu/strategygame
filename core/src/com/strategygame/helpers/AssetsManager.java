@@ -25,6 +25,11 @@ public class AssetsManager {
     public final Texture EYE = new Texture(Gdx.files.internal("monsters/eye.png"));
     public final Texture SLIME = new Texture(Gdx.files.internal("monsters/slime.png"));
 
+    // GUI elements
+    public final Texture MAPBUTTON = new Texture(Gdx.files.internal("gui/buttons/button_map.png"));
+    public final Texture COMMANDSBUTTON = new Texture(Gdx.files.internal("gui/buttons/button_commands.png"));
+    public final Texture PLACEHOLDER = new Texture(Gdx.files.internal("gui/mockups/player_info.png"));
+
     private AssetsManager() {}
 
     public static AssetsManager getInstance() {
