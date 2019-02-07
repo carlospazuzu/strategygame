@@ -1,15 +1,13 @@
 package com.strategygame.guieffects;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.strategygame.StrategyGame;
 import com.strategygame.entities.GameImage;
-import com.strategygame.handlers.PlayerInput;
 import com.strategygame.helpers.AssetsManager;
+import com.strategygame.helpers.Constants;
 
 public class GeneralPlayerSelection {
 
@@ -23,16 +21,22 @@ public class GeneralPlayerSelection {
     private GameImage buttonCommands;
 
     private float moveSpeed = 120f;
+    private float alphaStrength = .65f;
 
     private State currentState = State.SHOW_GUI;
 
-    private boolean showPlayerInfo = true;
-    private boolean showMapButton = true;
-    private boolean showCommandsButton = true;
+    private boolean showPlayerInfo;
+    private boolean showMapButton;
+    private boolean showCommandsButton;
+    private boolean blinkMapButton;
+    private boolean blinkCommandsButton;
 
     private int playerInfoTargetX;
     private int buttonMapTargetX;
     private int buttonCommandsTargetX;
+
+    private float blinkTimer = 0f;
+    private final int BLINK_DELAY = 50;
 
     private StrategyGame game;
 
@@ -50,13 +54,25 @@ public class GeneralPlayerSelection {
         buttonMapTargetX = 240 - buttonMap.getWidth();
         buttonCommandsTargetX = 240 - buttonCommands.getWidth();
 
-        restartPosition();
+        restartState();
     }
 
-    private void restartPosition() {
+    public void restartState() {
         currentPlayerInfo.setPosition(new Vector2(-currentPlayerInfo.getWidth(), 8));
-        buttonMap.setPosition(new Vector2(buttonMap.getWidth() + 240, 160 - buttonMap.getHeight() - 8));
-        buttonCommands.setPosition(new Vector2(buttonCommands.getWidth() + 240, 160 - buttonMap.getHeight() - 8 - buttonCommands.getHeight() - 8));
+        buttonMap.setPosition(new Vector2(
+                buttonMap.getWidth() + Constants.GAME_WIDTH,
+                Constants.GAME_HEIGHT - buttonMap.getHeight() - 8));
+        buttonCommands.setPosition(new Vector2(
+                buttonCommands.getWidth() + Constants.GAME_WIDTH,
+                Constants.GAME_HEIGHT - buttonMap.getHeight() - 8 - buttonCommands.getHeight() - 8));
+        showPlayerInfo = true;
+        showMapButton = true;
+        showCommandsButton = true;
+        blinkMapButton = false;
+        blinkCommandsButton = false;
+        blinkTimer = 0f;
+        buttonMap.setCanBeTouched(true);
+        buttonCommands.setCanBeTouched(true);
     }
 
     public void setCurrentState(State state) {
@@ -64,21 +80,10 @@ public class GeneralPlayerSelection {
     }
 
     public void handleInput() {
-        Gdx.app.log("POS X", "" + PlayerInput.screenX);
-        Gdx.app.log("POS Y", "" + PlayerInput.screenY);
-        Gdx.app.log("BTN POS X", "" + buttonMap.getPositionX());
-        Gdx.app.log("BTN POS Y", "" + buttonMap.getPositionY());
-        Gdx.app.log("SCREEN WIDTH", "" + Gdx.graphics.getWidth());
-        Gdx.app.log("SCREEN HEIGHT", "" + Gdx.graphics.getHeight());
-        Gdx.app.log("CLICK POS X", "" + PlayerInput.screenX / (Gdx.graphics.getWidth() / 240.0f));
-        Gdx.app.log("CLICK POS Y", "" + PlayerInput.screenY / (Gdx.graphics.getHeight() / 160.0f));
-        if (PlayerInput.isPressed) {
-            if (new Rectangle(buttonMap.getPositionX(), buttonMap.getPositionY(),
-                    buttonMap.getPositionX() + buttonMap.getWidth(), buttonMap.getPositionY() + buttonMap.getHeight())
-                    .contains(new Vector2(PlayerInput.screenX / (Gdx.graphics.getWidth() / 240.0f), 160 - (PlayerInput.screenY / (Gdx.graphics.getHeight() / 160.0f))))) {
-                Gdx.app.log("TOUCH", "PLAYER HAS JUST TOUCHED MAP BUTTON!");
-            }
-        }
+        if (buttonMap.hasJustBeenTouched())
+            setCurrentState(State.HAS_SELECTED_MAP);
+        else if (buttonCommands.hasJustBeenTouched())
+            setCurrentState(State.HAS_SELECTED_COMMANDS);
     }
 
     public void update(float delta) {
@@ -95,7 +100,7 @@ public class GeneralPlayerSelection {
                 if (buttonCommands.getPositionX() > buttonCommandsTargetX) {
                     buttonCommands.setPositionX(buttonCommands.getPositionX() - (moveSpeed * delta));
                 }
-                // force images to be on right place
+                // force images to be on the target place
                 if (currentPlayerInfo.getPositionX() > playerInfoTargetX) {
                     currentPlayerInfo.setPositionX(playerInfoTargetX);
                 }
@@ -107,8 +112,34 @@ public class GeneralPlayerSelection {
                 }
                 break;
             case HAS_SELECTED_MAP:
+                // hide all images but map button
+                showPlayerInfo = false;
+                showCommandsButton = false;
+                // avoid commands button to be touched
+                buttonCommands.setCanBeTouched(false);
+
+                blinkTimer += 1000 * delta;
+
+                if (blinkTimer >= BLINK_DELAY) {
+                    blinkTimer = 0f;
+                    blinkMapButton = !blinkMapButton;
+                }
+
                 break;
             case HAS_SELECTED_COMMANDS:
+                // hide all images but commands button
+                showPlayerInfo = false;
+                showMapButton = false;
+                // avoid map button to be touched
+                buttonMap.setCanBeTouched(false);
+
+                blinkTimer += 1000 * delta;
+
+                if (blinkTimer >= BLINK_DELAY) {
+                    blinkTimer = 0f;
+                    blinkCommandsButton = !blinkCommandsButton;
+                }
+
                 break;
         }
 
@@ -117,12 +148,25 @@ public class GeneralPlayerSelection {
     public void render() {
         spriteBatch.setProjectionMatrix(hudCamera.combined);
         spriteBatch.begin();
+        Color c = spriteBatch.getColor();
+        // player info
         if (showPlayerInfo)
             spriteBatch.draw(currentPlayerInfo.getImage(), currentPlayerInfo.getPositionX(), currentPlayerInfo.getPositionY());
-        if (showMapButton)
+        // map button routines
+        if (showMapButton) {
+            if (blinkMapButton)
+                spriteBatch.setColor(c.r, c.g, c.b, alphaStrength);
             spriteBatch.draw(buttonMap.getImage(), buttonMap.getPositionX(), buttonMap.getPositionY());
-        if (showCommandsButton)
+        }
+        spriteBatch.setColor(c.r, c.g, c.b, 1f);
+
+        // commands button routines
+        if (showCommandsButton) {
+            if (blinkCommandsButton)
+                spriteBatch.setColor(c.r, c.g, c.b, alphaStrength);
             spriteBatch.draw(buttonCommands.getImage(), buttonCommands.getPositionX(), buttonCommands.getPositionY());
+        }
+        spriteBatch.setColor(c.r, c.g, c.b, 1f);
         spriteBatch.end();
     }
 }

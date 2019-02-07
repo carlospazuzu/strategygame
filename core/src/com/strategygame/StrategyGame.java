@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.strategygame.handlers.GameStateManager;
 import com.strategygame.handlers.PlayerInputProcessor;
+import com.strategygame.helpers.Constants;
 
 public class StrategyGame extends ApplicationAdapter {
 
@@ -17,8 +18,8 @@ public class StrategyGame extends ApplicationAdapter {
     public static final float STEP = 1 / 60f;
     private float acum;
 
-    public static final int WIDTH = 240; // 320
-    public static final int HEIGHT = 160; // 240
+    private final int WIDTH = Constants.GAME_WIDTH;
+    private final int HEIGHT = Constants.GAME_HEIGHT;
 
     private GameStateManager gsm;
 
