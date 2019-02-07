@@ -2,22 +2,31 @@ package com.strategygame.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.strategygame.StrategyGame;
+import com.strategygame.decisions.CommandSelection;
+import com.strategygame.decisions.PlayerDecisionStateMachine;
 import com.strategygame.entities.Actor;
-import com.strategygame.guieffects.GeneralPlayerSelection;
-import com.strategygame.helpers.ActorPriorityComparator;
+import com.strategygame.decisions.GeneralPlayerSelection;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 public class CTBBController {
 
     private Queue<Actor> actorQueue;
     private HUDCameraController hudCameraController;
 
-    private GeneralPlayerSelection generalPlayerSelection;
+    private OrthographicCamera hudCamera;
 
-    public CTBBController(List<Actor> team, OrthographicCamera camera, OrthographicCamera hudCamera, StrategyGame game) {
+    private Stack<PlayerDecisionStateMachine> stateMachines;
+
+    public enum PlayerDecision {GENERAL, COMMANDS, CAMERA};
+
+    private PlayerDecision currentDecisionState;
+
+    private StrategyGame game;
+
+    public CTBBController(List<Actor> team, OrthographicCamera camera, StrategyGame game) {
         /*
         Collections.sort(team, new ActorPriorityComparator());
         Collections.reverse(team);
@@ -27,19 +36,60 @@ public class CTBBController {
         }
         */
 
-        generalPlayerSelection = new GeneralPlayerSelection(hudCamera, game);
+        stateMachines = new Stack<PlayerDecisionStateMachine>();
 
+        this.game = game;
+        this.hudCamera = game.getHUDCamera();
+
+        currentDecisionState = PlayerDecision.GENERAL;
+
+        pushState(PlayerDecision.GENERAL);
+    }
+
+    public StrategyGame getGame() {
+        return game;
+    }
+
+    public PlayerDecision getCurrentDecisionState() {
+        return currentDecisionState;
+    }
+
+    public void changeState(PlayerDecision decision) {
+        popCurrentState();
+        pushState(decision);
+        currentDecisionState = decision;
+    }
+
+    private void popCurrentState() {
+        stateMachines.pop().dispose();
+    }
+
+    private void pushState(PlayerDecision decision) {
+        stateMachines.push(getState(decision));
+    }
+
+    private PlayerDecisionStateMachine getState(PlayerDecision decision) {
+        switch (decision) {
+            case GENERAL:
+                return new GeneralPlayerSelection(this);
+            case COMMANDS:
+                return new CommandSelection(this);
+            case CAMERA:
+                break;
+        }
+
+        return null;
     }
 
     public void handleInput() {
-        generalPlayerSelection.handleInput();
+        stateMachines.peek().handleInput();
     }
 
     public void update(float delta) {
-        generalPlayerSelection.update(delta);
+        stateMachines.peek().update(delta);
     }
 
     public void render() {
-        generalPlayerSelection.render();
+        stateMachines.peek().render();
     }
 }

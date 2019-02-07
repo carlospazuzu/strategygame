@@ -1,4 +1,4 @@
-package com.strategygame.guieffects;
+package com.strategygame.decisions;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.strategygame.StrategyGame;
 import com.strategygame.entities.GameImage;
+import com.strategygame.handlers.CTBBController;
 import com.strategygame.helpers.AssetsManager;
 import com.strategygame.helpers.Constants;
+import com.strategygame.helpers.Tween;
 
-public class GeneralPlayerSelection {
+public class GeneralPlayerSelection extends PlayerDecisionStateMachine{
 
     enum State {SHOW_GUI, HAS_SELECTED_MAP, HAS_SELECTED_COMMANDS};
 
@@ -40,11 +42,11 @@ public class GeneralPlayerSelection {
 
     private StrategyGame game;
 
-    public GeneralPlayerSelection(OrthographicCamera hudCamera, StrategyGame game) {
-        this.hudCamera = hudCamera;
-        spriteBatch = new SpriteBatch();
+    public GeneralPlayerSelection(CTBBController ctbbController) {
+        super(ctbbController);
 
-        this.game = game;
+        this.hudCamera = ctbbController.getGame().getHUDCamera();
+        spriteBatch = new SpriteBatch();
 
         currentPlayerInfo = new GameImage(AssetsManager.getInstance().PLACEHOLDER);
         buttonMap = new GameImage(AssetsManager.getInstance().MAPBUTTON);
@@ -55,6 +57,11 @@ public class GeneralPlayerSelection {
         buttonCommandsTargetX = 240 - buttonCommands.getWidth();
 
         restartState();
+    }
+
+    @Override
+    public void changeDecisionSM(CTBBController.PlayerDecision decision) {
+        ctbbController.changeState(decision);
     }
 
     public void restartState() {
@@ -75,7 +82,7 @@ public class GeneralPlayerSelection {
         buttonCommands.setCanBeTouched(true);
     }
 
-    public void setCurrentState(State state) {
+    private void setCurrentState(State state) {
         currentState = state;
     }
 
@@ -91,26 +98,12 @@ public class GeneralPlayerSelection {
         switch (currentState) {
             case SHOW_GUI:
                 // move images to their respective places
-                if (currentPlayerInfo.getPositionX() < playerInfoTargetX) {
-                    currentPlayerInfo.setPositionX(currentPlayerInfo.getPositionX() + ((moveSpeed / 2) * delta));
-                }
-                if (buttonMap.getPositionX() > buttonMapTargetX) {
-                    buttonMap.setPositionX(buttonMap.getPositionX() - (moveSpeed * delta));
-                }
-                if (buttonCommands.getPositionX() > buttonCommandsTargetX) {
-                    buttonCommands.setPositionX(buttonCommands.getPositionX() - (moveSpeed * delta));
-                }
-                // force images to be on the target place
-                if (currentPlayerInfo.getPositionX() > playerInfoTargetX) {
-                    currentPlayerInfo.setPositionX(playerInfoTargetX);
-                }
-                if (buttonMap.getPositionX() < buttonMapTargetX) {
-                    buttonMap.setPositionX(buttonMapTargetX);
-                }
-                if (buttonCommands.getPositionX() < buttonCommandsTargetX) {
-                    buttonCommands.setPositionX(buttonCommandsTargetX);
-                }
+                Tween.positionX(currentPlayerInfo, playerInfoTargetX, moveSpeed / 2, delta);
+                Tween.positionX(buttonMap, buttonMapTargetX, moveSpeed, delta);
+                Tween.positionX(buttonCommands, buttonCommandsTargetX, moveSpeed, delta);
+
                 break;
+
             case HAS_SELECTED_MAP:
                 // hide all images but map button
                 showPlayerInfo = false;
@@ -126,6 +119,7 @@ public class GeneralPlayerSelection {
                 }
 
                 break;
+
             case HAS_SELECTED_COMMANDS:
                 // hide all images but commands button
                 showPlayerInfo = false;
@@ -168,5 +162,12 @@ public class GeneralPlayerSelection {
         }
         spriteBatch.setColor(c.r, c.g, c.b, 1f);
         spriteBatch.end();
+    }
+
+    @Override
+    public void dispose() {
+        currentPlayerInfo.getImage().dispose();
+        buttonMap.getImage().dispose();
+        buttonCommands.getImage().dispose();
     }
 }

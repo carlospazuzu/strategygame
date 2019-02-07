@@ -33,7 +33,7 @@ public class GameImage {
     }
 
     public boolean hasJustBeenTouched() {
-        return PlayerInput.isPressed &&
+        return PlayerInput.isPressed && canBeTouched &&
                 new Rectangle(
                 positionX,
                 positionY,
