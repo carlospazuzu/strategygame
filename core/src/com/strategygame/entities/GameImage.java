@@ -40,8 +40,8 @@ public class GameImage {
                 positionX + this.getWidth(),
                 positionY + this.getHeight())
                 .contains(new Vector2(
-                        PlayerInput.screenX / (float) (Gdx.graphics.getWidth() / Constants.GAME_WIDTH),
-                        Constants.GAME_HEIGHT - (PlayerInput.screenY / (float) (Gdx.graphics.getHeight() / Constants.GAME_HEIGHT))));
+                        PlayerInput.screenX,
+                        Constants.GAME_HEIGHT - PlayerInput.screenY));
     }
 
     public int getWidth() {

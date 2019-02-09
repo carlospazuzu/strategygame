@@ -1,6 +1,8 @@
 package com.strategygame.handlers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.strategygame.helpers.Constants;
 
 public class PlayerInputProcessor extends InputAdapter {
 
@@ -8,8 +10,8 @@ public class PlayerInputProcessor extends InputAdapter {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         PlayerInput.isPressed = true;
         PlayerInput.isReleased = false;
-        PlayerInput.screenX = screenX;
-        PlayerInput.screenY = screenY;
+        PlayerInput.screenX = screenX / (float) (Gdx.graphics.getWidth() / Constants.GAME_WIDTH);
+        PlayerInput.screenY = screenY / (float) (Gdx.graphics.getHeight() / Constants.GAME_HEIGHT);
         return true;
     }
 

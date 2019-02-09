@@ -35,6 +35,30 @@ public class Tween {
         positionY(image, position.y, speed, delta);
     }
 
+    public static void warningArrowX(GameImage arrow, float initialPositionX, float finalPositionX, float speed, float delta) {
+        if (arrow.getPositionX() < finalPositionX) {
+            arrow.setPositionX(arrow.getPositionX() + (speed * delta));
+
+            if (arrow.getPositionX() >= finalPositionX) arrow.setPositionX(initialPositionX);
+        } else if (arrow.getPositionX() > finalPositionX) {
+            arrow.setPositionX(arrow.getPositionX() - (speed * delta));
+
+            if (arrow.getPositionX() <= finalPositionX) arrow.setPositionX(initialPositionX);
+        }
+    }
+
+    public static void warningArrowY(GameImage arrow, float initialPositionY, float finalPositionY, float speed, float delta) {
+        if (arrow.getPositionY() < finalPositionY) {
+            arrow.setPositionY(arrow.getPositionY() + (speed * delta));
+
+            if (arrow.getPositionY() >= finalPositionY) arrow.setPositionY(initialPositionY);
+        } else if (arrow.getPositionY() > finalPositionY) {
+            arrow.setPositionY(arrow.getPositionY() - (speed * delta));
+
+            if (arrow.getPositionY() <= finalPositionY) arrow.setPositionY(initialPositionY);
+        }
+    }
+
     private boolean reachedDestinyX(float actualPositionX, float destinationPositionX) {
         return actualPositionX == destinationPositionX;
     }

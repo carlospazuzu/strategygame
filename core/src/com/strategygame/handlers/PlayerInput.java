@@ -2,8 +2,8 @@ package com.strategygame.handlers;
 
 public class PlayerInput {
 
-    public static int screenX;
-    public static int screenY;
+    public static float screenX;
+    public static float screenY;
 
     public static boolean isPressed;
     public static boolean isReleased;

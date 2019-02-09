@@ -39,6 +39,8 @@ public class GeneralPlayerSelection extends PlayerDecisionStateMachine{
 
     private float blinkTimer = 0f;
     private final int BLINK_DELAY = 50;
+    private float camSelectionTimer = 0f;
+    private final int CAM_SELECTION_TIMER_DELAY = 400;
 
     private StrategyGame game;
 
@@ -78,6 +80,7 @@ public class GeneralPlayerSelection extends PlayerDecisionStateMachine{
         blinkMapButton = false;
         blinkCommandsButton = false;
         blinkTimer = 0f;
+        camSelectionTimer = 0f;
         buttonMap.setCanBeTouched(true);
         buttonCommands.setCanBeTouched(true);
     }
@@ -112,10 +115,15 @@ public class GeneralPlayerSelection extends PlayerDecisionStateMachine{
                 buttonCommands.setCanBeTouched(false);
 
                 blinkTimer += 1000 * delta;
+                camSelectionTimer += 1000 * delta;
 
                 if (blinkTimer >= BLINK_DELAY) {
                     blinkTimer = 0f;
                     blinkMapButton = !blinkMapButton;
+                }
+
+                if (camSelectionTimer >= CAM_SELECTION_TIMER_DELAY) {
+                    this.ctbbController.changeState(CTBBController.PlayerDecision.CAMERA);
                 }
 
                 break;
@@ -166,8 +174,10 @@ public class GeneralPlayerSelection extends PlayerDecisionStateMachine{
 
     @Override
     public void dispose() {
+        /*
         currentPlayerInfo.getImage().dispose();
         buttonMap.getImage().dispose();
         buttonCommands.getImage().dispose();
+        */
     }
 }

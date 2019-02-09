@@ -2,6 +2,7 @@ package com.strategygame.handlers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.strategygame.StrategyGame;
+import com.strategygame.decisions.CameraSelection;
 import com.strategygame.decisions.CommandSelection;
 import com.strategygame.decisions.PlayerDecisionStateMachine;
 import com.strategygame.entities.Actor;
@@ -24,9 +25,10 @@ public class CTBBController {
 
     private PlayerDecision currentDecisionState;
 
+    private CameraController cameraController;
     private StrategyGame game;
 
-    public CTBBController(List<Actor> team, OrthographicCamera camera, StrategyGame game) {
+    public CTBBController(List<Actor> team, CameraController cameraController, StrategyGame game) {
         /*
         Collections.sort(team, new ActorPriorityComparator());
         Collections.reverse(team);
@@ -35,7 +37,7 @@ public class CTBBController {
             actorQueue.add(actor);
         }
         */
-
+        this.cameraController = cameraController;
         stateMachines = new Stack<PlayerDecisionStateMachine>();
 
         this.game = game;
@@ -45,6 +47,8 @@ public class CTBBController {
 
         pushState(PlayerDecision.GENERAL);
     }
+
+    public CameraController getCameraController() { return cameraController; }
 
     public StrategyGame getGame() {
         return game;
@@ -75,7 +79,7 @@ public class CTBBController {
             case COMMANDS:
                 return new CommandSelection(this);
             case CAMERA:
-                break;
+                return new CameraSelection(this);
         }
 
         return null;

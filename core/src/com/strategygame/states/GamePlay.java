@@ -55,7 +55,7 @@ public class GamePlay extends GameState {
         rogue = new Rogue();
 
         cameraController = new CameraController(camera, tiledMap, game);
-        ctbbController = new CTBBController(null, hudCamera, gsm.game());
+        ctbbController = new CTBBController(null, cameraController, gsm.game());
         // cameraController.moveToChar(14, 11);
 
         openingMusic = Gdx.audio.newMusic(Gdx.files.internal("music/opening.ogg"));
