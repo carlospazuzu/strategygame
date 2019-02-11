@@ -18,6 +18,10 @@ Done proudly using:
 
 ![libgdx_logo](https://libgdx.badlogicgames.com/img/logo.png)
 
+### Diagrama de Classes
+To see the image in its original size, [click here](https://imgur.com/a/4BK7WH3)
+![class_diagram](//i.imgur.com/p6mCGMI.png)
+
 ## Screenshots
 ![game screen](https://i.imgur.com/vXEzxrF.gif)
 

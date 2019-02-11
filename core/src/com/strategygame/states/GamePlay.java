@@ -17,6 +17,10 @@ import com.strategygame.fighters.Rogue;
 import com.strategygame.handlers.CTBBController;
 import com.strategygame.handlers.CameraController;
 import com.strategygame.handlers.GameStateManager;
+import com.strategygame.monsters.Eye;
+import com.strategygame.monsters.Rat;
+import com.strategygame.monsters.Slime;
+import com.strategygame.monsters.Snake;
 
 import javax.swing.text.html.HTMLDocument;
 import java.util.Iterator;
@@ -37,6 +41,11 @@ public class GamePlay extends GameState {
     private Mage mage;
     private Rogue rogue;
 
+    private Rat rat;
+    private Slime slime;
+    private Eye eye;
+    private Snake snake;
+
     private CameraController cameraController;
 
     private CTBBController ctbbController;
@@ -53,6 +62,11 @@ public class GamePlay extends GameState {
         knight = new Knight();
         mage = new Mage();
         rogue = new Rogue();
+
+        rat = new Rat();
+        slime = new Slime();
+        eye = new Eye();
+        snake = new Snake();
 
         cameraController = new CameraController(camera, tiledMap, game);
         ctbbController = new CTBBController(null, cameraController, gsm.game());
@@ -87,6 +101,11 @@ public class GamePlay extends GameState {
         mage.update(delta);
         rogue.update(delta);
 
+        rat.update(delta);
+        slime.update(delta);
+        eye.update(delta);
+        snake.update(delta);
+
         ctbbController.update(delta);
 
     }
@@ -105,6 +124,11 @@ public class GamePlay extends GameState {
         knight.render(spriteBatch, 7, 4);
         mage.render(spriteBatch, 5, 5);
         rogue.render(spriteBatch, 9, 4);
+
+        rat.render(spriteBatch, 16, 14);
+        eye.render(spriteBatch, 12, 14);
+        slime.render(spriteBatch, 14, 13);
+        snake.render(spriteBatch, 14, 11);
 
         spriteBatch.end();
 
